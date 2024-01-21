@@ -4,41 +4,48 @@ const adminRepo = require("../repository/admin");
 const mongoose = require("mongoose");
 
 exports.addComment = async (payload) => {
-    try {
-        const addComment = {
-            commentBody: payload.commentBody,
-            date: payload.date
-        }
-        const addingComment = await userRepo.addComment(payload.blogId , payload.userId , addComment);
-        return addingComment;
-    } catch (error) {
-        throw Boom.badRequest(error);
+  try {
+    const addComment = {
+      commentBody: payload.commentBody,
+      date: payload.date
     }
+    const addingComment = await userRepo.addComment(payload.blogId, payload.userId, addComment);
+    return addingComment;
+  } catch (error) {
+    throw Boom.badRequest(error);
+  }
 }
 
-exports.like = async (payload) => {
-    try{
-        if (!mongoose.Types.ObjectId.isValid(payload.blogId)) {
-            throw new Error('Invalid blogId');
-        }
-        const blog = await adminRepo.getBlogById(payload.blogId);
-        console.log(blog)
-        if(blog){
-            const hasLiked = blog.like.some(liked => liked.userId === payload.userId);
-            console.log(hasLiked)
-            if(hasLiked){
-                return new Error("Blog is already liked!!!")
-            } else {
-                const result = await userRepo.like(payload);
-                console.log(result)
-                return result;
-            }
-        } else {
-            throw new Error('Blog not found');
-        }
-    } catch(error){
-        throw Boom.badRequest(error)
+exports.likeservices = async (payload) => {
+  try {
+    console.log("Received blogId:", payload.blogId);
+    if (!mongoose.Types.ObjectId.isValid(payload.blogId)) {
+      throw new Error('Invalid blogId');
     }
- }
- 
- 
+    const findBlog = await adminRepo.getBlogById(payload.blogId);
+    const hasLiked = findBlog.like ? findBlog.like.some(like => like.userId.toString() === payload.userId) : false;
+    if (hasLiked) {
+      throw Boom.badRequest("Duplicate like attempt detected!!!");
+    }
+    const blog = await userRepo.likeRepo(payload.blogId, payload.userId)
+    return blog;
+
+  } catch (error) {
+    throw Boom.badRequest(error);
+  }
+};
+
+exports.unLike = async (payload) => {
+  try {
+    const getBlogById = await adminRepo.getBlogById(payload.blogId);
+    const ifLiked = getBlogById.like ? getBlogById.like.some(like => like.userId.toString() === payload.userId) : false;
+    if(ifLiked){
+      const removeLike = await userRepo.unLike(payload.blogId , payload.userId);
+      return removeLike;
+    }
+  } catch (error) {
+    throw Boom.badRequest(error);
+  }
+}
+
+

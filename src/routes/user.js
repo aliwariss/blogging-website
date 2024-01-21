@@ -5,6 +5,7 @@ const router = express.Router();
 const controller = require("../controller/user");
 
 router.post("/user/addComment/:id/:id",controller.addComment);
-router.put("/user/addLike/:id/:id",controller.like);
+router.put("/user/addLike/:blogId",controller.like);
+router.delete("/user/deleteLike/:blogId/:userId",controller.unLike);
 
 module.exports = router;

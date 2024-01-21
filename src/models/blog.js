@@ -38,7 +38,8 @@ const blogSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "authSchema",
                 required: true
-            }
+            },
+            _id: false
         }
     ]
 })
