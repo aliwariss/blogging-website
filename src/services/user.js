@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 exports.addComment = async (payload) => {
   try {
     const addComment = {
+      blogId: payload.blogId,
       commentBody: payload.commentBody,
       date: payload.date
     }
@@ -18,7 +19,7 @@ exports.addComment = async (payload) => {
 
 exports.likeservices = async (payload) => {
   try {
-    console.log("Received blogId:", payload.blogId);
+    // console.log("Received blogId:", payload.blogId);
     if (!mongoose.Types.ObjectId.isValid(payload.blogId)) {
       throw new Error('Invalid blogId');
     }
@@ -39,10 +40,33 @@ exports.unLike = async (payload) => {
   try {
     const getBlogById = await adminRepo.getBlogById(payload.blogId);
     const ifLiked = getBlogById.like ? getBlogById.like.some(like => like.userId.toString() === payload.userId) : false;
-    if(ifLiked){
-      const removeLike = await userRepo.unLike(payload.blogId , payload.userId);
+    if (ifLiked) {
+      const removeLike = await userRepo.unLike(payload.blogId, payload.userId);
       return removeLike;
     }
+  } catch (error) {
+    throw Boom.badRequest(error);
+  }
+}
+
+exports.search = async (query) => {
+  try {
+    const searchBar = await userRepo.search({
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } }
+      ]
+    })
+    return searchBar;
+  } catch (error) {
+    throw Boom.badRequest(error);
+  }
+}
+
+exports.getCommentsById = async (blogId) => {
+  try {
+    const getComments = await userRepo.getCommentsById(blogId);
+    return getComments;
   } catch (error) {
     throw Boom.badRequest(error);
   }

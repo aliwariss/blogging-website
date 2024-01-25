@@ -12,7 +12,7 @@ exports.signUp = async (req , res) => {
         const result = await services.signUp(payload);
         res.status(200).json({data : result});
     } catch (error) {
-        console.log(error)
+        console.error(error)
         res.status(400).json({error: "Can't sign up!!!"});
     }
 }
@@ -26,7 +26,7 @@ exports.signIn = async (req , res) => {
         const result = await services.signIn(payload);
         return res.status(200).json({data : result});
     } catch (error) {
-        console.log(error)
+        console.error(error)
         return res.status(400).json({error: "Can't sign in!!!"});
     }
 }
