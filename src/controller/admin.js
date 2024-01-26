@@ -14,7 +14,7 @@ var upload = multer({ storage: storage });
 
 exports.addBlog = async (req , res) => {
     try {
-        upload.single('image')(req, res, async function (err) {
+        upload.fields([{ name: 'images' },{ name: 'thumbnail' }])(req, res, async function (err) {
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({error: err.message});
             } else if (err) {
@@ -24,8 +24,8 @@ exports.addBlog = async (req , res) => {
             const payload = {
                 title: req.body.title,
                 description: req.body.description,
-                images: req.file.path,
-                thumbnail: req.file.path,
+                images: req.files['images'][0].path,
+                thumbnail: req.files['thumbnail'][0].path,
                 tags: req.body.tags,
                 category: req.body.category,
                 slug: req.body.category
