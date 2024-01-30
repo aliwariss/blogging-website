@@ -58,7 +58,9 @@ exports.search = async (req , res) => {
     const query = typeof req.params.q === 'string' ? req.params.q : '';
     // console.log("query: ", query)
     try {
-        const result = await services.search(query);
+        const pageNumber = req.params.p || 1;
+        const pageSize = 4;
+        const result = await services.search(query , pageNumber , pageSize);
         return res.status(200).json({data : result});
     } catch (error) {
         console.error(error)

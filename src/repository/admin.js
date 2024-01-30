@@ -13,8 +13,8 @@ exports.deleteBlog = async(id) => {
     return blogModel.deleteOne({_id: id});
 }
 
-exports.getAllBlogs = async () => {
-    return blogModel.find();
+exports.getAllBlogs = async (pageNumber, pageSize) => {
+    return blogModel.find().skip((pageNumber - 1 ) * pageSize).limit(pageSize);
 }
 
 exports.getBlogById = async (id) => {

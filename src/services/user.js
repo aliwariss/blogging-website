@@ -49,14 +49,14 @@ exports.unLike = async (payload) => {
   }
 }
 
-exports.search = async (query) => {
+exports.search = async (query,pageNumber , pageSize) => {
   try {
     const searchBar = await userRepo.search({
       $or: [
         { title: { $regex: query, $options: "i" } },
         { content: { $regex: query, $options: "i" } }
       ]
-    })
+    },pageNumber , pageSize)
     return searchBar;
   } catch (error) {
     throw Boom.badRequest(error);

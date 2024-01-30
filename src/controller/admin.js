@@ -20,7 +20,7 @@ exports.addBlog = async (req , res) => {
             } else if (err) {
                 return res.status(400).json({error: err.message});
             }
-
+            
             const payload = {
                 title: req.body.title,
                 description: req.body.description,
@@ -70,12 +70,15 @@ exports.deleteBlog = async (req , res) => {
     }
 }
 
-exports.getAllBlogs = async (res) => {
+exports.getAllBlogs = async (req , res) => {
     try {
-        const result = await services.getAllBlogs();
+        const pageNumber = req.params.p || 1;
+        const pageSize = 4;
+        const result = await services.getAllBlogs(pageNumber , pageSize);
         // console.log(result)
         return res.status(200).json({data : result});
     } catch (error) {
+        console.log(error)
         return res.status(400).json({error: "Can't get all the bolgs!!!"});
     }
 }

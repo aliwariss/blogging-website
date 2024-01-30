@@ -67,9 +67,9 @@ exports.deleteBlog = async (id) => {
 
 }
 
-exports.getAllBlogs = async () => {
+exports.getAllBlogs = async (pageNumber , pageSize) => {
     try {
-        const getAllBlogs = await adminRepo.getAllBlogs();
+        const getAllBlogs = await adminRepo.getAllBlogs(pageNumber , pageSize);
         return getAllBlogs;
     } catch (error) {
         throw Boom.badRequest(error);

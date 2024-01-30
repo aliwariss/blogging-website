@@ -26,8 +26,8 @@ exports.unLike = async (blogId , userId) => {
     );
 }
 
-exports.search = async (query) => {
-    return await blogModel.find(query);
+exports.search = async (query, pageNumber, pageSize) => {
+    return await blogModel.find(query).skip((pageNumber - 1 ) * pageSize).limit(pageSize);;
 }
 
 exports.getCommentsById = async (blogId) => {
